@@ -1,6 +1,33 @@
 import gdsfactory as gf
 
-@gf.cell
+@gf.cell()
+def heater_with_padding(
+    heater_length: float = 40.0
+) -> gf.component:
+    
+    component = gf.Component()
+    #adding padding for heater in order to implement a keep-out zone
+    heater = gf.components.straight_heater_metal(length=heater_length)
+    component << heater
+
+    gf.add_padding(component, default=2.0)
+
+    component.add_port("o1", port=heater.ports["o1"])
+    component.add_port("o2", port=heater.ports["o2"])
+
+    component.add_port("l_e1", port=heater.ports["l_e1"])
+    component.add_port("l_e2", port=heater.ports["l_e2"])
+    component.add_port("l_e3", port=heater.ports["l_e3"])
+    component.add_port("l_e4", port=heater.ports["l_e4"])
+
+    component.add_port("r_e1", port=heater.ports["r_e1"])
+    component.add_port("r_e2", port=heater.ports["r_e2"])
+    component.add_port("r_e3", port=heater.ports["r_e3"])
+    component.add_port("r_e4", port=heater.ports["r_e4"])
+
+    return component
+
+@gf.cell()
 def mzi(
     delta_l: float = 10.0,
     wg_width: float = 2.0, 
@@ -18,7 +45,7 @@ def mzi(
     bend_90 = gf.components.bend_euler(radius=bend_radius)
     straight_const = gf.components.straight(length=STRAIGHT_CONST_LENGTH)
     straight_ref = gf.components.straight(length=STRAIGHT_CONST_LENGTH + delta_l)
-    straight_heater = gf.components.straight_heater_metal(length=heater_length)
+    straight_heater = heater_with_padding()
     straight_non_heater = gf.components.straight(length=heater_length)
 
     #creating and connecting instances
@@ -93,4 +120,4 @@ def mzi(
 
 if __name__ == '__main__':
     gradient_mzi = mzi()
-    mzi().show()
+    gradient_mzi.show()
