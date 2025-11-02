@@ -1,16 +1,39 @@
 import gdsfactory as gf
+from functools import partial
+
 
 @gf.cell()
 def heater_with_padding(
+    wg_cross_section: gf.cross_section,
     heater_length: float = 40.0
 ) -> gf.component:
     
     component = gf.Component()
-    #adding padding for heater in order to implement a keep-out zone
-    heater = gf.components.straight_heater_metal(length=heater_length)
+    
+    HEATER_METAL_CROSS_SECTION = partial(
+        gf.cross_section.heater_metal,
+        width = 5 * wg_cross_section.keywords['width'],
+    )
+
+    HEATER_WG_CROSS_SECTION = partial(
+        gf.cross_section.strip_heater_metal, 
+        width=wg_cross_section.keywords['width'],
+        heater_width= 5 * wg_cross_section.keywords['width']
+    )
+
+    heater = gf.components.straight_heater_metal(
+        length=heater_length,
+        cross_section=wg_cross_section,
+        cross_section_waveguide_heater=HEATER_WG_CROSS_SECTION,
+        cross_section_heater=HEATER_METAL_CROSS_SECTION,
+    )
+
     component << heater
 
+    #adding padding for heater in order to implement a keep-out zone
     gf.add_padding(component, default=2.0)
+
+    #propagate optical/electrical ports
 
     component.add_port("o1", port=heater.ports["o1"])
     component.add_port("o2", port=heater.ports["o2"])
@@ -30,23 +53,48 @@ def heater_with_padding(
 @gf.cell()
 def mzi(
     delta_l: float = 10.0,
-    wg_width: float = 2.0, 
+    wg_width: float = 0.5, 
     bend_radius: float = 10.0, 
     heater_length: float = 40.0
 ) -> gf.component:
     
     STRAIGHT_CONST_LENGTH = 2.0
+    WG_CROSS_SECTION = partial(
+        gf.cross_section.strip,
+        width = wg_width
+    )
 
     component = gf.Component()
     
     #initializing components
 
-    coupler = gf.components.coupler()
-    bend_90 = gf.components.bend_euler(radius=bend_radius)
-    straight_const = gf.components.straight(length=STRAIGHT_CONST_LENGTH)
-    straight_ref = gf.components.straight(length=STRAIGHT_CONST_LENGTH + delta_l)
-    straight_heater = heater_with_padding()
-    straight_non_heater = gf.components.straight(length=heater_length)
+    coupler = gf.components.coupler(
+        cross_section=WG_CROSS_SECTION
+    )
+
+    bend_90 = gf.components.bend_euler(
+        radius=bend_radius, 
+        cross_section=WG_CROSS_SECTION
+    )
+
+    straight_const = gf.components.straight(
+        length=STRAIGHT_CONST_LENGTH, 
+        cross_section=WG_CROSS_SECTION
+    )
+
+    straight_ref = gf.components.straight(
+        length=STRAIGHT_CONST_LENGTH + delta_l, 
+        cross_section=WG_CROSS_SECTION
+    )
+
+    straight_heater = heater_with_padding(
+        wg_cross_section=WG_CROSS_SECTION
+    )
+
+    straight_non_heater = gf.components.straight(
+        length=heater_length, 
+        cross_section=WG_CROSS_SECTION
+    )
 
     #creating and connecting instances
 
@@ -113,11 +161,18 @@ def mzi(
 
     #electrical ports (heater)
 
-    component.add_port("e1", port=heater.ports["l_e1"])
-    component.add_port("e2", port=heater.ports["r_e1"])
+    component.add_port("l_e1", port=heater.ports["l_e1"])
+    component.add_port("l_e2", port=heater.ports["l_e2"])
+    component.add_port("l_e3", port=heater.ports["l_e3"])
+    component.add_port("l_e4", port=heater.ports["l_e4"])
+
+    component.add_port("r_e1", port=heater.ports["r_e1"])
+    component.add_port("r_e2", port=heater.ports["r_e2"])
+    component.add_port("r_e3", port=heater.ports["r_e3"])
+    component.add_port("r_e4", port=heater.ports["r_e4"])
 
     return component
 
 if __name__ == '__main__':
-    gradient_mzi = mzi()
+    gradient_mzi = mzi(wg_width=1)
     gradient_mzi.show()
