@@ -58,7 +58,7 @@ def mzi(
     heater_length: float = 40.0
 ) -> gf.component:
     
-    STRAIGHT_CONST_LENGTH = 2.0
+
     WG_CROSS_SECTION = partial(
         gf.cross_section.strip,
         width = wg_width
@@ -77,13 +77,8 @@ def mzi(
         cross_section=WG_CROSS_SECTION
     )
 
-    straight_const = gf.components.straight(
-        length=STRAIGHT_CONST_LENGTH, 
-        cross_section=WG_CROSS_SECTION
-    )
-
-    straight_ref = gf.components.straight(
-        length=STRAIGHT_CONST_LENGTH + delta_l, 
+    straight_delta_l = gf.components.straight(
+        length=delta_l, 
         cross_section=WG_CROSS_SECTION
     )
 
@@ -107,18 +102,15 @@ def mzi(
     bend_bottom_left_one.mirror_y()
     bend_bottom_left_one.connect('o1', coupler_left.ports['o4'])
 
-    straight_vertical_right_const = component << straight_const
-    straight_vertical_right_const.connect('o1', bend_bottom_left_one.ports['o2'])
-
-    straight_vertical_left_ref = component << straight_ref
-    straight_vertical_left_ref.connect('o1', bend_top_left_one.ports['o2'])
+    straight_delta_l_left = component << straight_delta_l
+    straight_delta_l_left.connect('o1', bend_top_left_one.ports['o2'])
 
     bend_top_left_two = component << bend_90
     bend_top_left_two.mirror_x()
-    bend_top_left_two.connect('o1', straight_vertical_left_ref.ports['o2'])
+    bend_top_left_two.connect('o1', straight_delta_l_left.ports['o2'])
 
     bend_bottom_left_two = component << bend_90
-    bend_bottom_left_two.connect('o1', straight_vertical_right_const.ports['o2'])
+    bend_bottom_left_two.connect('o1', bend_bottom_left_one.ports['o2'])
 
     heater = straight_heater = component << straight_heater
     heater.connect('o1', bend_top_left_two['o2'])
@@ -130,21 +122,18 @@ def mzi(
     bend_top_right_one.mirror_x()
     bend_top_right_one.connect('o1', heater.ports['o2'])
 
-    straight_vertical_right_ref = component << straight_ref
-    straight_vertical_right_ref.connect('o1', bend_top_right_one.ports['o2'])
+    straight_delta_l_right = component << straight_delta_l
+    straight_delta_l_right.connect('o1', bend_top_right_one.ports['o2'])
 
     bend_top_right_two = component << bend_90
-    bend_top_right_two.connect('o1', straight_vertical_right_ref.ports['o2'])
+    bend_top_right_two.connect('o1', straight_delta_l_right.ports['o2'])
 
     bend_bottom_right_one = component << bend_90
     bend_bottom_right_one.connect('o1', non_heater.ports['o2'])
 
-    straight_vertical_right_const = component << straight_const
-    straight_vertical_right_const.connect('o1', bend_bottom_right_one.ports['o2'])
-
     bend_bottom_right_two = component << bend_90
     bend_bottom_right_two.mirror_y()
-    bend_bottom_right_two.connect('o1', straight_vertical_right_const.ports['o2'])
+    bend_bottom_right_two.connect('o1', bend_bottom_right_one.ports['o2'])
 
     coupler_right = component << coupler
     coupler_right.connect('o2', bend_bottom_right_one['o2'])
@@ -174,5 +163,5 @@ def mzi(
     return component
 
 if __name__ == '__main__':
-    gradient_mzi = mzi(wg_width=1)
+    gradient_mzi = mzi(wg_width=1, bend_radius=50)
     gradient_mzi.show()
