@@ -1,4 +1,6 @@
 import gdsfactory as gf
+import gdsfactory.generic_tech
+
 from functools import partial
 
 
@@ -36,7 +38,21 @@ def heater_with_padding(
     #propagate optical/electrical ports
 
     component.add_port("o1", port=heater.ports["o1"])
+    component.add_label(
+        text="o1", 
+        position=(
+            component.ports["o1"].x,
+            component.ports["o1"].y
+        ),
+    )
     component.add_port("o2", port=heater.ports["o2"])
+    component.add_label(
+        text="o2", 
+        position=(
+            component.ports["o2"].x,
+            component.ports["o2"].y
+        ),
+    )
 
     component.add_port("l_e1", port=heater.ports["l_e1"])
     component.add_port("l_e2", port=heater.ports["l_e2"])
@@ -143,25 +159,134 @@ def mzi(
 
     #optical ports
 
-    component.add_port("o1", port=coupler_left.ports["o1"])
-    component.add_port("o2", port=coupler_left.ports["o2"])
-    component.add_port("o3", port=coupler_right.ports["o3"])
-    component.add_port("o4", port=coupler_right.ports["o4"])
+    component.add_port(
+        "o1", 
+        port=coupler_left.ports["o1"],
+        orientation=0
+    )
+    component.add_label(
+        text="o1", 
+        position=(
+            component.ports["o1"].x,
+            component.ports["o1"].y
+        ),
+    )
+
+    component.add_port(
+        "o2",
+        port=coupler_left.ports["o2"],
+        orientation=0
+    )
+    component.add_label(
+        text="o2", 
+        position=(
+            component.ports["o2"].x,
+            component.ports["o2"].y
+        ),
+    )
+
+    component.add_port(
+        "o3",
+        port=coupler_right.ports["o3"],
+        orientation=180
+    )
+    component.add_label(
+        text="o3", 
+        position=(
+            component.ports["o3"].x,
+            component.ports["o3"].y
+        ),
+    )
+
+    component.add_port(
+        "o4", 
+        port=coupler_right.ports["o4"],
+        orientation=180
+    )
+    component.add_label(
+        text="o4", 
+        position=(
+            component.ports["o4"].x,
+            component.ports["o4"].y
+        ),
+    )
 
     #electrical ports (heater)
 
     component.add_port("l_e1", port=heater.ports["l_e1"])
+    component.add_label(
+        text="l_e1", 
+        position=(
+            component.ports["l_e1"].x,
+            component.ports["l_e1"].y
+        ),
+    )
+
     component.add_port("l_e2", port=heater.ports["l_e2"])
+    component.add_label(
+        text="l_e2", 
+        position=(
+            component.ports["l_e2"].x,
+            component.ports["l_e2"].y
+        ),
+    )
+
     component.add_port("l_e3", port=heater.ports["l_e3"])
+    component.add_label(
+        text="l_e3", 
+        position=(
+            component.ports["l_e3"].x,
+            component.ports["l_e3"].y
+        ),
+    )
+
     component.add_port("l_e4", port=heater.ports["l_e4"])
+    component.add_label(
+        text="l_e4", 
+        position=(
+            component.ports["l_e4"].x,
+            component.ports["l_e4"].y
+        ),
+    )
 
     component.add_port("r_e1", port=heater.ports["r_e1"])
+    component.add_label(
+        text="r_e1", 
+        position=(
+            component.ports["r_e1"].x,
+            component.ports["r_e1"].y
+        ),
+    )
+
     component.add_port("r_e2", port=heater.ports["r_e2"])
+    component.add_label(
+        text="r_e2", 
+        position=(
+            component.ports["r_e2"].x,
+            component.ports["r_e2"].y
+        ),
+    )
+
     component.add_port("r_e3", port=heater.ports["r_e3"])
+    component.add_label(
+        text="r_e3", 
+        position=(
+            component.ports["r_e3"].x,
+            component.ports["r_e3"].y
+        ),
+    )
+
     component.add_port("r_e4", port=heater.ports["r_e4"])
+    component.add_label(
+        text="r_e4", 
+        position=(
+            component.ports["r_e4"].x,
+            component.ports["r_e4"].y
+        ),
+    )
 
     return component
 
 if __name__ == '__main__':
-    gradient_mzi = mzi(wg_width=1, bend_radius=50)
-    gradient_mzi.show()
+    mzi = mzi()
+    mzi.show()
