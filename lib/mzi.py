@@ -296,10 +296,3 @@ def mzi(
     )
 
     return component
-
-if __name__ == '__main__':
-    mzi = mzi()
-    from pathlib import Path
-    mzi.write_gds(
-        Path(__file__).parent / 'test.gds',
-    )

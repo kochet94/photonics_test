@@ -5,7 +5,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
 from pathlib import Path
 
-from lib.mzi import heater_with_padding
 import gdsfactory as gf
 from functools import partial
 
