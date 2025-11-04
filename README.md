@@ -80,8 +80,8 @@ Minumum WG Width violations:
 * lib/
   * mzi.py - pcell of MZI with built-in heater and padding
  
-* tests/
- * tests for mzi optical ports and drc based on unittest python library
+* tests/\*
+   * tests for mzi optical ports and drc based on unittest python library
 
  ***Usage***: python tests.py
 
