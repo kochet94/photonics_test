@@ -19,5 +19,5 @@ All further operations are meant to be performed in the installed environment, s
 ***Options***: in main script one can set MATRIX_SIZE, HEATER_PADDING (heater keepout area) and MZI_SPACE
 
 * drc:
-** runsets:
-*** MIN_WG_WIDTH.lydrc - drc file to check a keepout are violations
+  * runsets:
+    * MIN_WG_WIDTH.lydrc - drc file to check a keepout are violations
