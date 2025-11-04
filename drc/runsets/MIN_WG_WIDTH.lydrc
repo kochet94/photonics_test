@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>drc</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <priority>0</priority>
+ <shortcut/>
+ <show-in-menu>true</show-in-menu>
+ <group-name>drc_scripts</group-name>
+ <menu-path>tools_menu.drc.end</menu-path>
+ <interpreter>dsl</interpreter>
+ <dsl-interpreter-name>drc-dsl-xml</dsl-interpreter-name>
+ <text>puts('###################')
+puts('MIN WG WIDTH CHECK')
+
+#LAYERS DEFINITION
+
+wg = input(1, 0)
+
+wg.width(0.45).output("min_wg_width", "WG width must be &gt;= 0.45um")</text>
+</klayout-macro>

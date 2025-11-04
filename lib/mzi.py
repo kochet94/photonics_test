@@ -1,13 +1,19 @@
 import gdsfactory as gf
-import gdsfactory.generic_tech
+import gdsfactory.generic_tech as tech
+from gdsfactory.technology import LayerMap
 
 from functools import partial
+
+
+class LayerMap(LayerMap):
+    DRC_TEXT = (66, 1)
 
 
 @gf.cell()
 def heater_with_padding(
     wg_cross_section: gf.cross_section,
-    heater_length: float = 40.0
+    heater_length: float = 40.0,
+    padding: float = 2.0
 ) -> gf.component:
     
     component = gf.Component()
@@ -33,25 +39,27 @@ def heater_with_padding(
     component << heater
 
     #adding padding for heater in order to implement a keep-out zone
-    gf.add_padding(component, default=2.0)
+    gf.add_padding(component, default=padding)
 
     #propagate optical/electrical ports
-
+ 
     component.add_port("o1", port=heater.ports["o1"])
     component.add_label(
-        text="o1", 
+        text="DRC_INTERCONNECTION", 
         position=(
             component.ports["o1"].x,
             component.ports["o1"].y
         ),
+        layer=LayerMap.DRC_TEXT
     )
     component.add_port("o2", port=heater.ports["o2"])
     component.add_label(
-        text="o2", 
+        text="DRC_INTERCONNECTION", 
         position=(
             component.ports["o2"].x,
             component.ports["o2"].y
         ),
+        layer=LayerMap.DRC_TEXT
     )
 
     component.add_port("l_e1", port=heater.ports["l_e1"])
@@ -71,7 +79,8 @@ def mzi(
     delta_l: float = 10.0,
     wg_width: float = 0.5, 
     bend_radius: float = 10.0, 
-    heater_length: float = 40.0
+    heater_length: float = 40.0,
+    padding: float = 2.0
 ) -> gf.component:
     
 
@@ -99,7 +108,8 @@ def mzi(
     )
 
     straight_heater = heater_with_padding(
-        wg_cross_section=WG_CROSS_SECTION
+        wg_cross_section=WG_CROSS_SECTION,
+        padding=padding
     )
 
     straight_non_heater = gf.components.straight(
@@ -289,4 +299,7 @@ def mzi(
 
 if __name__ == '__main__':
     mzi = mzi()
-    mzi.show()
+    from pathlib import Path
+    mzi.write_gds(
+        Path(__file__).parent / 'test.gds',
+    )

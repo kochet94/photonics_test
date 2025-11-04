@@ -28,12 +28,12 @@ if __name__ == '__main__':
         cross_section=WG_CROSS_SECTION
     )
 
-    straight = gf.components.straight(
-        length=20, 
+    straight_template = gf.components.straight(
+        length=2, 
         cross_section=WG_CROSS_SECTION
     )
-
     heater_with_padding_test = component << heater_with_padding
+    heater_with_padding_test.move((0,0))
 
     test_bend_90_left = component  << bend_90
     test_bend_90_left.connect('o2', heater_with_padding_test['o2'])
@@ -41,6 +41,12 @@ if __name__ == '__main__':
     test_bend_90_right = component  << bend_90
     test_bend_90_right.mirror_y
     test_bend_90_right.connect('o1', heater_with_padding_test['o1'])
+
+    straight_invalid_inside = component << straight_template
+    straight_invalid_inside.movey(-4)
+
+    straight_invalid_cross = component << straight_template
+    straight_invalid_cross.movey(-7.5)
 
     component.write_gds(
         Path(__file__).parent / 'QA_HEATER_PADDING.gds',

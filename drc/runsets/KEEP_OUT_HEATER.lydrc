@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>drc</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <priority>0</priority>
+ <shortcut/>
+ <show-in-menu>true</show-in-menu>
+ <group-name>drc_scripts</group-name>
+ <menu-path>tools_menu.drc.end</menu-path>
+ <interpreter>dsl</interpreter>
+ <dsl-interpreter-name>drc-dsl-xml</dsl-interpreter-name>
+ <text>puts('###################')
+puts('MZI HEATER KEEPOUT CHECK')
+
+#LAYERS DEFINITION
+
+wg = input(1, 0)
+text_drc = input(66, 1)
+padding = input(67, 0)
+heater = input(47, 0)
+
+#MZI HEATER KEEPOUT CHECKS
+
+mzi_region = padding | heater
+wgs_in_mzi_region = wg &amp; mzi_region
+
+layout = RBA::CellView::active.layout
+
+dbu = layout.dbu
+
+text_boxes_region = RBA::Region.new
+
+box_size = 1 / dbu
+
+text_drc.texts.each do |item|
+
+  bbox = item.bbox
+
+  bottom_left_x = bbox.left / dbu
+  bottom_left_y = bbox.bottom / dbu
+
+  #puts "text bbox: #{bottom_left_x}, #{bottom_left_y}"
+
+  box = RBA::Box.new(bottom_left_x - box_size, bottom_left_y - box_size, 
+                     bottom_left_x + box_size, bottom_left_y + box_size)
+
+  text_boxes_region += box
+
+end
+
+cell = RBA::CellView::active.cell
+view = RBA::Application::instance.main_window.current_view
+
+layer_index = layout.insert_layer(RBA::LayerInfo.new(300, 300))
+view.add_missing_layers
+cell.shapes(layer_index).insert(text_boxes_region)
+
+layout.update
+
+tmp_layer = input(300,300)
+
+containing_shapes = wgs_in_mzi_region.interacting(tmp_layer)
+
+final = wgs_in_mzi_region - containing_shapes
+final.output("mzi_heater_keepout", "No WG shapes in MZI Heater Keepout Zone")
+layout.delete_layer(layer_index)
+layout.update
+view.update_content</text>
+</klayout-macro>
