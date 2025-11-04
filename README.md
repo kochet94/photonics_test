@@ -4,7 +4,7 @@
 
 * **OS** : Windows 10+
 * **Software** : Klayout (latest)
-* s**Misc** : Python3.13, Appropriate environment supplied with this project
+* **Misc** : Python3.13, Appropriate environment supplied with this project
 
 # Installation
 
@@ -15,4 +15,9 @@ All further operations are meant to be performed in the installed environment, s
 # Contents
 
 * design/generate_clements.py - a script to generate Clements Mesh based on supplied MZI
-***Usage***: python 
+***Usage***: python ./generate_clements.py
+***Options***: in main script one can set MATRIX_SIZE, HEATER_PADDING (heater keepout area) and MZI_SPACE
+
+* drc:
+** runsets:
+*** MIN_WG_WIDTH.lydrc - drc file to check a keepout are violations
