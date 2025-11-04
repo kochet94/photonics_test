@@ -35,3 +35,5 @@ class TestQaCellsDrc(unittest.TestCase):
         sp = subprocess.run(sp_args)
 
         self.assertEqual(sp.returncode, 1)
+
+        #here comes some logic associated with report file parse...
