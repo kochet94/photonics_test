@@ -88,6 +88,6 @@ Minumum WG Width violations:
 # Problems to solve
 
 * Klayout does not run in batch mode on Windows machine, so test_qa_cells_drc check is incomplete but there's a comment with further logic provided
-* Minimum space check does not take into account coupler where the space is reduced intentionally (light intensity splitting)... Some workaround needed.
+* Minimum space check does not take into account coupler where the space is reduced intentionally (light intensity splitting)... Some workaround like introducing forbidding layer in that special zone would work.
 * No grating couplers added to Clements Mesh design since lack of time...
 
