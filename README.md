@@ -72,7 +72,7 @@ Minumum WG Width violations:
 * drc/
   * runsets/
     * MIN_WG_WIDTH.lydrc - drc file to check minimum width of waveguides (≥ 0.45 μm)
-    * MIN_WG_SPACE.lydrc - drc file to check minimum space between waveguides (≥ 0.6 μm)
+    * MIN_WG_SPACE.lydrc - drc file to check minimum space between waveguides (≥ 2.0 μm)
     * KEEP_OUT_HEATER.lydrc - drc file to check a keepout area violations (no wg shapes allowed in that area)
     * MAIN_DRC.lydrc - drc master file running all checks above at once
   * qa_cells/*: contains testcases for all described drc's and their generation scripts
